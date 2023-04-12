@@ -1,16 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config();
+// Follow this setup guide to integrate the Deno language server with your editor:
+// https://deno.land/manual/getting_started/setup_your_environment
+// This enables autocomplete, go to definition, etc.
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 import { Telegraf } from "telegraf";
-import { downloadVoiceFile } from "./lib/downloadVoiceFile";
-import { postToWhisper } from "./lib/postToWhisper";
-import { textToSpeech } from "./lib/htApi";
+import { downloadVoiceFile } from "../lib/downloadVoiceFile.ts";
+import { postToWhisper } from "../lib/postToWhisper.ts";
+import { textToSpeech } from "../lib/htApi.ts";
 import { createReadStream, existsSync, mkdirSync } from "fs";
-import { Model as ChatModel } from "./models/chat";
-import { Model as ChatWithTools } from "./models/chatWithTools";
+import { Model as ChatWithTools } from "../models/chatWithTools.ts";
 
 const workDir = "./tmp";
-const telegramToken = process.env.TELEGRAM_TOKEN!;
+const telegramToken = Deno.env.get(TELEGRAM_TOKEN!);
 
 const bot = new Telegraf(telegramToken);
 let model = new ChatWithTools();
@@ -38,7 +40,7 @@ bot.on("voice", async (ctx) => {
   } catch (error) {
     console.log(error);
     await ctx.reply(
-      "Whoops! There was an error while downloading the voice file. Maybe ffmpeg is not installed?"
+        "Whoops! There was an error while downloading the voice file. Maybe ffmpeg is not installed?"
     );
     return;
   }
@@ -54,7 +56,7 @@ bot.on("voice", async (ctx) => {
   } catch (error) {
     console.log(error);
     await ctx.reply(
-      "Whoops! There was an error while talking to OpenAI. See logs for details."
+        "Whoops! There was an error while talking to OpenAI. See logs for details."
     );
     return;
   }
@@ -73,7 +75,7 @@ bot.on("voice", async (ctx) => {
   } catch (error) {
     console.log(error);
     await ctx.reply(
-      "Whoops! There was an error while synthesizing the response via play.ht. See logs for details."
+        "Whoops! There was an error while synthesizing the response via play.ht. See logs for details."
     );
   }
 });
@@ -97,21 +99,22 @@ bot.on("message", async (ctx) => {
     console.log(error);
 
     const message = JSON.stringify(
-      (error as any)?.response?.data?.error ?? "Unable to extract error"
+        (error as any)?.response?.data?.error ?? "Unable to extract error"
     );
 
     console.log({ message });
 
     await ctx.reply(
-      "Whoops! There was an error while talking to OpenAI. Error: " + message
+        "Whoops! There was an error while talking to OpenAI. Error: " + message
     );
   }
-});
-
-bot.launch().then(() => {
-  console.log("Bot launched");
 });
 
 process.on("SIGTERM", () => {
   bot.stop();
 });
+
+serve(async (req) => {
+  bot.webhookCallback(bot.secretPathComponent())
+})
+

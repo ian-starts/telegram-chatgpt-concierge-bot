@@ -3,15 +3,15 @@ import { ChatOpenAI } from "langchain/chat_models";
 import { BufferMemory } from "langchain/memory";
 import { Configuration } from "openai";
 import { OpenAIApi } from "openai";
-import { googleTool } from "./tools/google";
+import { googleTool } from "./tools/google.ts";
 
-const openAIApiKey = process.env.OPENAI_API_KEY!;
+const openAIApiKey = Deno.env.get(OPENAI_API_KEY!);
 
 const params = {
   verbose: true,
   temperature: 1,
   openAIApiKey,
-  modelName: process.env.OPENAI_MODEL ?? "gpt-4",
+  modelName: Deno.env.get(OPENAI_MODEL) ?? "gpt-4",
   maxConcurrency: 1,
   maxTokens: 1000,
   maxRetries: 5,

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { createWriteStream } from "fs";
 
-const htApiUserId = process.env.PLAY_HT_USER_ID;
-const htApiSecretKey = process.env.PLAY_HT_SECRET_KEY;
+const htApiUserId = Deno.env.get(PLAY_HT_USER_ID);
+const htApiSecretKey = Deno.env.get(PLAY_HT_SECRET_KEY);
 
 export async function textToSpeech(text: string) {
   if (!htApiUserId || !htApiSecretKey) {
@@ -44,18 +43,12 @@ export async function textToSpeech(text: string) {
   }
 
   const transcriptPath = `./tmp/ht-${transcriptionId}.mp3`;
-  const writestream = createWriteStream(transcriptPath);
   const download = await axios({
     method: "GET",
     url: audioUrl,
     responseType: "stream",
   });
-
-  await new Promise(async (resolve, reject) => {
-    download.data.pipe(writestream);
-    writestream.on("finish", resolve);
-    writestream.on("error", reject);
-  });
+  await Deno.writeFile(transcriptPath, download.data);
 
   return transcriptPath;
 }

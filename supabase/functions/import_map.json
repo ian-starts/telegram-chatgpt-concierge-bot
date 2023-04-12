@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "lodash": "https://cdn.skypack.dev/lodash",
+    "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+    "fluent-ffmpeg": "https://cdn.skypack.dev/fluent-ffmpeg@1.7.0",
+    "fs": "https://deno.land/std@0.51.0/fs/mod.ts",
+    "telegraf": "https://cdn.skypack.dev/telegraf",
+    "langchain/tools": "https://cdn.skypack.dev/langchain/tools",
+    "googlethis": "https://cdn.skypack.dev/googlethis"
+  }
+}
