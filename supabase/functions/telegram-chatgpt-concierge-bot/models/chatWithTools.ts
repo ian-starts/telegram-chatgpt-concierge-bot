@@ -1,17 +1,19 @@
-import { AgentExecutor, Tool, initializeAgentExecutor } from "langchain/agents";
-import { ChatOpenAI } from "langchain/chat_models";
-import { BufferMemory } from "langchain/memory";
-import { Configuration } from "openai";
-import { OpenAIApi } from "openai";
-import { googleTool } from "./tools/google";
+import { AgentExecutor, Tool, initializeAgentExecutor } from "https://esm.sh/langchain/agents";
+import { ChatOpenAI } from "https://esm.sh/langchain/chat_models/openai";
+import { BufferMemory } from "https://esm.sh/langchain/memory";
+import { Configuration, OpenAIApi } from "https://esm.sh/openai";
+import {
+  BingSerpAPI
+} from "https://esm.sh/langchain/tools";
 
-const openAIApiKey = process.env.OPENAI_API_KEY!;
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY')!;
+const bingApiKey = Deno.env.get('BING_API_KEY')!;
 
 const params = {
   verbose: true,
   temperature: 1,
   openAIApiKey,
-  modelName: process.env.OPENAI_MODEL ?? "gpt-4",
+  modelName: Deno.env.get('OPENAI_MODEL') ?? "gpt-4",
   maxConcurrency: 1,
   maxTokens: 1000,
   maxRetries: 5,
@@ -28,12 +30,12 @@ export class Model {
       apiKey: openAIApiKey,
     });
 
-    this.tools = [googleTool];
+    this.tools = [new BingSerpAPI(bingApiKey)];
     this.openai = new OpenAIApi(configuration);
     this.model = new ChatOpenAI(params, configuration);
   }
 
-  public async call(input: string) {
+  public async call(input: string, emulateAs: string) {
     if (!this.executor) {
       this.executor = await initializeAgentExecutor(
         this.tools,

@@ -1,23 +1,22 @@
-import { Tool } from "langchain/agents";
-import { ChatOpenAI } from "langchain/chat_models";
+import { Tool } from "https://esm.sh/langchain/agents";
+import { ChatOpenAI } from "chat_models";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
   MessagesPlaceholder,
   SystemMessagePromptTemplate,
-} from "langchain/prompts";
-import { BufferMemory } from "langchain/memory";
-import { ConversationChain } from "langchain/chains";
-import { Configuration } from "openai";
-import { OpenAIApi } from "openai";
+} from "https://esm.sh/langchain/prompts";
+import { BufferMemory } from "https://esm.sh/langchain/memory";
+import { ConversationChain } from "https://esm.sh/langchain/chains";
+import { Configuration, OpenAIApi } from "https://esm.sh/openai";
 
-const openAIApiKey = process.env.OPENAI_API_KEY!;
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY')!;
 
 const params = {
   verbose: true,
   temperature: 1,
   openAIApiKey,
-  modelName: process.env.OPENAI_MODEL ?? "gpt-4",
+  modelName: Deno.env.get(OPENAI_MODEL) ?? "gpt-4",
   maxConcurrency: 1,
   maxTokens: 1000,
   maxRetries: 5,
