@@ -24,6 +24,10 @@ bot.command("message_sam", async (ctx) => {
     await handlePrompt(ctx, "Sam Harris");
 });
 
+bot.command("message_ben_shapiro", async (ctx) => {
+    await handlePrompt(ctx, "Ben Shapiro");
+});
+
 bot.command("message_roe_jogan", async (ctx) => {
     await handlePrompt(ctx, "Joe Rogan");
 });
