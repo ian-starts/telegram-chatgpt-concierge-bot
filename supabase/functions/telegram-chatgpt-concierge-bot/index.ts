@@ -20,19 +20,32 @@ bot.command("help", (ctx) => {
     ctx.reply("Send me a message and I will echo it back to you.");
 });
 
-bot.command("message", async (ctx) => {
-    const text = (ctx.message as any).text;
+bot.command("message_sam", async (ctx) => {
+    await handlePrompt(ctx, "Sam Harris");
+});
 
+bot.command("message_roe_jogan", async (ctx) => {
+    await handlePrompt(ctx, "Joe Rogan");
+});
+
+bot.command("message_real_joe", async (ctx) => {
+    await handlePrompt(ctx, "Joe Hudson, the maker of The Art of Accomplishment");
+});
+
+bot.command("message_hagrid", async (ctx) => {
+    await handlePrompt(ctx, "Hagrid from Harry Potter");
+});
+
+const handlePrompt = async (ctx: any, emulateAs: string) => {
+    const text = (ctx.message as any).text;
     if (!text) {
         ctx.reply("Please send a text message.");
         return;
     }
 
     console.log("Input: ", text);
-
-    // await ctx.sendChatAction("typing");
     try {
-        const response = await model.call(text);
+        const response = await model.call(text, emulateAs);
 
         await ctx.reply(response);
     } catch (error) {
@@ -48,7 +61,7 @@ bot.command("message", async (ctx) => {
             "Whoops! There was an error while talking to OpenAI. Error: " + message
         );
     }
-});
+}
 const handleUpdate = webhookCallback(bot, 'std/http')
 
 serve(async (req) => {
