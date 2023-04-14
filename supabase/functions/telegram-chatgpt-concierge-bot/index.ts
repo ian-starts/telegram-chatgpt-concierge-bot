@@ -66,6 +66,10 @@ const handleUpdate = webhookCallback(bot, 'std/http')
 
 serve(async (req) => {
     try {
+        const url = new URL(req.url);
+        if (url.searchParams.get("secret") !== Deno.env.get("FUNCTION_SECRET")) {
+            return new Response("not allowed", { status: 405 });
+        }
         return await handleUpdate(req)
     } catch (err) {
         console.error(err)
