@@ -20,4 +20,4 @@ jobs:
         with:
           version: 1.50.3
       - run: supabase -v
-      - run: supabase functions deploy telegram-chatgpt-concierge-bot --legacy-build --project-ref $PROJECT_ID --no-verify-jwt
+      - run: supabase functions deploy telegram-chatgpt-concierge-bot --legacy-bundle --project-ref $PROJECT_ID --no-verify-jwt
