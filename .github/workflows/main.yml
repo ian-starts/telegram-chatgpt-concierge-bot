@@ -16,9 +16,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - uses: supabase/setup-cli@v1
         with:
           version: 1.0.0
-
+      - run: supabase -v
       - run: supabase functions deploy telegram-chatgpt-concierge-bot --project-ref $PROJECT_ID --no-verify-jwt
